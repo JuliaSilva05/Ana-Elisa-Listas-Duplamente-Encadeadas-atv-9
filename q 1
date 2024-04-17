@@ -222,15 +222,6 @@ void remover(LDE *lista, char desc[]){
       printf("Tarefa não existente!\n");
     } else if (strcmp(lista->inicio->descricao,desc) == 0) {
       executarTarefa(lista);
-      /*
-      while (aux != NULL){
-        if (strcmp(aux->descricao,desc)==0){
-          
-        }
-        
-        aux = aux->prox;
-      }
-      */
       
     } else if(strcmp(lista->fim->descricao,desc)==0){
       aux = lista->fim;
