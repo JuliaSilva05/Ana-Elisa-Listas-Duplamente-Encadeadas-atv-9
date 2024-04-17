@@ -332,37 +332,6 @@ void alterarPrioridade(LDE *lista, char desc[], int dif){
   }
 }
 
-
-  /*
-void inserirInicio(LDE *lista, int diff, char desc[]) {
-  TNoLDE *novo;
-  if (isEmpty(*lista)==1){
-    novo = (TNoLDE*) malloc(sizeof(TNoLDE));
-    novo->dif = diff;
-    strcpy(novo->descricao,desc);
-    novo->prox = NULL;
-    novo->ant = NULL;
-    lista->inicio = novo;
-    lista->fim = novo;
-    lista->qtd++;
-  } else{
-    if (busca(*lista,desc) != NULL){//se o valor já estiver na lista
-      printf("Valor repetido!\n");
-    }else{
-      novo = (TNoLDE*) malloc(sizeof(TNoLDE));
-      novo->dif = diff;
-      strcpy(novo->descricao,desc);
-      novo->ant = NULL;
-      novo->prox = lista->inicio;
-      lista->inicio->ant = novo;
-      lista->inicio = novo;
-      lista->qtd++;
-      printf("Adicionado!\n");
-    }
-  }
-}
-*/
-
 int main(void) {
   LDE listaDuplam;
   inicializar(&listaDuplam);
