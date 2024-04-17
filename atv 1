@@ -1,0 +1,426 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct noLDE{
+  struct noLDE *ant;
+  char descricao[100];
+  int dif;
+  struct noLDE *prox;
+} TNoLDE;
+
+typedef struct lde{
+  TNoLDE *inicio;
+  TNoLDE *fim;
+  int qtd;
+} LDE;
+
+void inicializar(LDE*lista){
+  lista->inicio = NULL;
+  lista->qtd = 0;
+  lista->fim = NULL;
+}
+
+int isEmpty(LDE lista){
+  if ((lista.inicio == NULL) && (lista.fim==NULL) &&(lista.qtd==0)){
+    return 1;
+  } else{
+    return 0;
+  }
+}
+
+void exibirOpcoes() {
+  printf("\nOpções: \n");
+  printf("1 –Inserir tarefa\n");
+  printf("2 –Procurar tarefa\n");
+  printf("3 -Executar primeira tarefa\n");
+  printf("4 -Remover tarefa\n");
+  printf("5 –Exibir por dificuldade\n");
+  printf("6 –Exibir lista\n");
+  printf("7 -Alterar prioridade\n");
+  printf("0 -Encerrar programa \n");
+  printf("Informe a opção desejada: ");
+}
+
+void imprimir(LDE lista){
+  if (isEmpty(lista) == 1){
+    printf("Lista vazia!\n");
+  } else{
+    TNoLDE* aux = lista.inicio;
+    while (aux != NULL){
+      printf("\n");
+      printf("Descrição: %s", aux->descricao);
+      printf("Dificuldade: %d\n", aux->dif);
+      //printf("\n");
+      aux = aux->prox;
+    }
+    printf("\n%d\n",lista.qtd);
+    free(aux);
+  }
+  
+}
+
+void imprimirInversa(LDE lista){
+  if (isEmpty(lista) == 1){
+    printf("Lista vazia!\n");
+  } else{
+    TNoLDE* aux = lista.fim;
+    while (aux != NULL){
+      printf("Descrição: %s ", aux->descricao);
+      printf("Dificuldade: %d\n", aux->dif);
+      printf("\n");
+      aux = aux->ant;
+    }
+    printf("\n%d\n",lista.qtd);
+    free(aux);
+  }
+}
+
+TNoLDE* busca(LDE lista, char desc[]){
+  TNoLDE* aux = lista.inicio;
+  if (isEmpty(lista) == 1){
+    return NULL;
+  }
+  else{
+    if (strcmp(lista.inicio->descricao,desc)==0){
+      return lista.inicio;
+    }
+    else if (strcmp(lista.fim->descricao,desc)==0){
+        return lista.fim;
+      }
+    else{
+      aux = lista.inicio->prox;
+      while (aux !=NULL){
+        if (strcmp(aux->descricao,desc)==0){
+          return aux;
+        } else{
+          aux = aux->prox;
+        }
+      }
+      return NULL;
+    }
+  }
+}
+
+void inserir(LDE*lista, char desc[], int diff){
+  TNoLDE *novo;
+  TNoLDE *retorno = busca(*lista, desc);
+  if (isEmpty(*lista)==1){
+    novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+    novo->dif = diff;
+    strcpy(novo->descricao,desc);
+    novo->prox = NULL;
+    novo->ant = NULL;
+    lista->inicio = novo;
+    lista->fim = novo;
+    lista->qtd++;
+    printf("Adicionado!\n");
+  } else{
+    if (retorno == NULL){ //ainda nao existe
+      if (diff >lista->inicio->dif){
+        novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+        novo->dif = diff;
+        strcpy(novo->descricao,desc);
+        novo->prox = lista->inicio;
+        novo->ant = NULL;
+        lista->inicio->ant = novo;
+        lista->inicio = novo;
+        lista->qtd++;
+        printf("Adicionado!\n");
+      } 
+      else if (diff <= lista->fim->dif){
+        novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+        novo->dif = diff;
+        strcpy(novo->descricao,desc);
+        novo->prox = NULL;
+        novo->ant = lista->fim;
+        lista->fim->prox = novo;
+        lista->fim = novo;
+        lista->qtd++;
+        printf("Adicionado!\n");
+      }
+      /*else if (diff == lista->fim->dif){
+        novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+        
+      }*/
+      else {
+        TNoLDE *aux = lista->inicio->prox;
+        while (aux != NULL){
+          if (diff > aux->dif){
+            novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+            novo->dif = diff;
+            strcpy(novo->descricao,desc);
+            novo->prox = aux;
+            novo->ant = aux->ant;
+            aux->ant->prox = novo;
+            aux->ant = novo;
+            lista->qtd++;
+            printf("Adicionado!\n");
+            break;
+          }
+          aux = aux->prox;
+        }
+        
+      }
+        
+    } else{
+      printf("Descrição repetida!\n");
+    }
+  }
+}
+
+void quantasAntes(LDE lista, char desc[]){
+  TNoLDE* aux = lista.inicio;
+  int cont = 1;
+  if (isEmpty(lista)==1){
+    printf("Lista vazia!\n");
+  } else { //se nao tiver vazia
+    if (busca(lista, desc) == NULL){
+      printf("Tarefa não existente!\n");
+    } else{
+      while (aux != NULL){
+        if (strcmp(aux->descricao,desc)==0){
+          printf("A tarefa está na posição %d\n",cont);
+        }
+        cont++;
+        aux = aux->prox;
+      }
+    }
+  }
+  free(aux);
+}
+
+void executarTarefa(LDE *lista){
+  TNoLDE *aux;
+  if (isEmpty(*lista)==1){
+    printf("Lista vazia!\n");
+  } else if (lista->inicio == lista->fim){
+    printf("Tarefa executada a: %s\n", lista->inicio->descricao);
+    free(lista->inicio);
+    lista->inicio = NULL;
+    lista->fim = NULL;
+    lista->qtd--;
+  } else{
+    aux = lista->inicio;
+    lista->inicio = lista->inicio->prox;
+    lista->inicio->ant = NULL;
+    printf("Tarefa executada: %s\n",aux->descricao);
+    free(aux);
+    lista->qtd--;
+  }
+  if (lista->qtd==0){
+    lista->fim = NULL;
+    lista->inicio = NULL;
+  }
+  //free(aux);
+
+}
+
+void remover(LDE *lista, char desc[]){
+  TNoLDE *aux = lista->inicio;
+  TNoLDE *aux2 = NULL;
+  if (isEmpty(*lista)==1){
+    printf("Lista vazia!\n");
+  } else {
+    if (busca(*lista, desc) == NULL){
+      printf("Tarefa não existente!\n");
+    } else if (strcmp(lista->inicio->descricao,desc) == 0) {
+      executarTarefa(lista);
+      /*
+      while (aux != NULL){
+        if (strcmp(aux->descricao,desc)==0){
+          
+        }
+        
+        aux = aux->prox;
+      }
+      */
+      
+    } else if(strcmp(lista->fim->descricao,desc)==0){
+      aux = lista->fim;
+      lista->fim = lista->fim->ant;
+      lista->fim->prox = NULL;
+      printf("Tarefa removida: %s\n",aux->descricao);
+      free(aux);
+      lista->qtd--;
+      /*if (lista->qtd == 0){
+        lista->fim = NULL;
+        lista->inicio = NULL;
+      }*/
+      
+    } else {
+      while (aux != NULL){
+        if (strcmp(aux->descricao,desc)==0){
+          aux2 = aux->ant;
+          aux2->prox = aux->prox;
+          aux->prox->ant = aux2;
+          printf("Tarefa removida: %s\n",aux->descricao);
+          free(aux);
+          lista->qtd--;
+          /*if (lista->qtd == 0){
+            lista->fim = NULL;
+            lista->inicio = NULL;
+          }*/
+          break;
+        }
+        aux2 = aux;
+        aux = aux->prox;
+      }
+      
+    }
+  }
+}
+
+TNoLDE* buscaPorDific(LDE lista, int diff){
+  TNoLDE* aux = lista.inicio;
+  if (lista.inicio->dif == diff){
+    return lista.inicio;
+  } else if (lista.fim->dif == diff){
+    return lista.fim;
+  } else{
+    aux = lista.inicio->prox;
+    while (aux != NULL){
+      if (aux->dif == diff){ //se achou
+        //free(aux);
+        return aux;
+      } else{
+        aux = aux->prox;
+      }
+    }
+    free(aux);
+    return NULL;
+  }
+}
+
+
+void exibirPorPrioridade(LDE *lista, int diff){
+  TNoLDE* aux;
+  TNoLDE* retorno;
+  if (isEmpty(*lista)==1){
+    printf("Lista vazia!\n");
+  } else{ //se nao estiver vazia
+    //se existir
+    if (buscaPorDific(*lista, diff) != NULL){
+      aux = buscaPorDific(*lista, diff);
+      printf("\nTarefas com a dificuldade %d:\n",diff);
+      while (aux != NULL){
+        if (aux->dif == diff){
+          printf("Descrição: %s\n", aux->descricao);
+          //printf("Dificuldade: %d\n", aux->dif);
+        }
+        aux = aux->prox;
+      }
+    } else{
+      printf("Não há tarefas com essa dificuldade!\n");
+    }
+  }
+       
+  free(aux);
+}
+
+
+void alterarPrioridade(LDE *lista, char desc[], int dif){
+  TNoLDE* aux;
+  aux = busca(*lista, desc);
+  if (aux == NULL){
+    printf("Tarefa não existente!\n");
+  } else{
+    aux->dif = dif;
+    remover(lista,desc);
+    inserir(lista, desc, dif);
+    printf("Prioridade alterada!\n");
+  }
+}
+
+
+  /*
+void inserirInicio(LDE *lista, int diff, char desc[]) {
+  TNoLDE *novo;
+  if (isEmpty(*lista)==1){
+    novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+    novo->dif = diff;
+    strcpy(novo->descricao,desc);
+    novo->prox = NULL;
+    novo->ant = NULL;
+    lista->inicio = novo;
+    lista->fim = novo;
+    lista->qtd++;
+  } else{
+    if (busca(*lista,desc) != NULL){//se o valor já estiver na lista
+      printf("Valor repetido!\n");
+    }else{
+      novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+      novo->dif = diff;
+      strcpy(novo->descricao,desc);
+      novo->ant = NULL;
+      novo->prox = lista->inicio;
+      lista->inicio->ant = novo;
+      lista->inicio = novo;
+      lista->qtd++;
+      printf("Adicionado!\n");
+    }
+  }
+}
+*/
+
+int main(void) {
+  LDE listaDuplam;
+  inicializar(&listaDuplam);
+  int op, num;
+  int dific;
+  char desc[100];
+  do {
+    exibirOpcoes();
+    scanf("%d", &op);
+    switch (op) {
+      case 1: //inserir valor
+        setbuf(stdin,NULL);
+        printf("Descreva a tarefa: ");
+        fgets(desc,100,stdin);
+        setbuf(stdin,NULL);
+        printf("Digite o número para adicionar: ");
+        scanf("%d", &num);
+        inserir(&listaDuplam, desc,num);   
+          break;
+      case 2:
+        printf("Pesquise a tarefa pela descrição: ");
+        setbuf(stdin,NULL);
+        fgets(desc,100,stdin);
+        quantasAntes(listaDuplam, desc);
+          break;
+      case 3:
+        executarTarefa(&listaDuplam);
+          break;
+      case 4:
+        printf("Digite a tarefa que deseja remover: ");
+        setbuf(stdin,NULL);
+        fgets(desc,100,stdin);
+        remover(&listaDuplam, desc);
+          break;
+      case 5: 
+        printf("Qual dificuldade deseja pesquisar? ");
+        scanf("%d", &num);
+        exibirPorPrioridade(&listaDuplam, num);
+          break;
+      case 6: //exibir lista inversa
+        imprimir(listaDuplam);
+          break;
+      case 7:
+        printf("Digite a tarefa que deseja alterar a prioridade: ");
+        setbuf(stdin,NULL);
+        fgets(desc,100,stdin);
+        printf("Digite a nova dificuldade: ");
+        scanf("%d", &num);
+        alterarPrioridade(&listaDuplam, desc, num);
+          break;
+    
+      case 0: 
+        printf("Fim de programa! \n");
+        break;
+      default: 
+        printf("Opção inválida! \n");
+    }
+  } while (op != 0);
+
+  return 0;
+}
