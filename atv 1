@@ -139,10 +139,6 @@ void inserir(LDE*lista, char desc[], int diff){
         lista->qtd++;
         printf("Adicionado!\n");
       }
-      /*else if (diff == lista->fim->dif){
-        novo = (TNoLDE*) malloc(sizeof(TNoLDE));
-        
-      }*/
       else {
         TNoLDE *aux = lista->inicio->prox;
         while (aux != NULL){
