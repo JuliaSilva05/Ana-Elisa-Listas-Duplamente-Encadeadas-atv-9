@@ -1,0 +1,52 @@
+void inserir(LDE*lista, int valor){
+  TNoLDE *novo;
+  if (isEmpty(*lista) == 1){
+    novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+    novo->info = valor;
+    novo->prox = NULL;
+    novo->ant = NULL;
+    lista->inicio = novo;
+    lista->fim = novo;
+    lista->qtd++;
+    printf("Adicionado!\n");
+  } 
+  else{
+    if (valor <= lista->inicio->info){
+      novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+      novo->info = valor;
+      novo->prox = lista->inicio;
+      novo->ant = NULL;
+      lista->inicio->ant = novo;
+      lista->inicio = novo;
+      lista->qtd++;
+      printf("Adicionado!\n");
+    } 
+    else if (valor > lista->fim->info){
+      novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+      novo->info = valor;
+      novo->prox = NULL;
+      novo->ant = lista->fim;
+      lista->fim->prox = novo;
+      lista->fim = novo;
+      lista->qtd++;
+      printf("Adicionado!\n");
+      
+    } else{
+      TNoLDE *aux = lista->inicio->prox;
+      while (aux != NULL){
+        if (valor <= aux->info){
+          novo = (TNoLDE*) malloc(sizeof(TNoLDE));
+          novo->info = valor;
+          novo->prox = aux;
+          novo->ant = aux->ant;
+          aux->ant->prox = novo;
+          aux->ant = novo;
+          lista->qtd++;
+          printf("Adicionado!\n");
+          break;
+        }
+        aux = aux->prox;
+      }
+    }
+  }
+}
