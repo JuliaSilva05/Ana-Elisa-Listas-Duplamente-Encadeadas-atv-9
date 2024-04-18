@@ -1,7 +1,7 @@
 void removerPrimeiro(LDE*lista){
   TNoLDE *aux;
   if (lista->inicio == lista->fim){
-    printf("Removida: %d, %s\n", lista->inicio->info, lista->inicio->str);
+    printf("Removida: %d\n", lista->inicio->info);
     free(lista->inicio);
     lista->inicio = NULL;
     lista->fim = NULL;
@@ -10,7 +10,7 @@ void removerPrimeiro(LDE*lista){
     aux = lista->inicio;
     lista->inicio = lista->inicio->prox;
     lista->inicio->ant = NULL;
-    printf("Removida: %d, %s\n", aux->info, aux->str);
+    printf("Removida: %d\n", aux->info);
     free(aux);
     lista->qtd--;
   }
@@ -41,7 +41,7 @@ void remover(LDE *lista, int valor){
          aux = lista->fim;
          lista->fim = lista->fim->ant;
          lista->fim->prox = NULL;
-         printf("Removida: %d, %s\n", aux->info,aux->str);
+         printf("Removida: %d\n", aux->info);
          free(aux);
          lista->qtd--;
       }
@@ -53,7 +53,7 @@ void remover(LDE *lista, int valor){
             aux2 = aux->ant;
             aux2->prox = aux->prox;
             aux->prox->ant = aux2;
-            printf("Removida: %d, %s\n",aux->info,aux->str);
+            printf("Removida: %d\n",aux->info);
             free(aux);
             lista->qtd--;
             break;
