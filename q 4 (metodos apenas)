@@ -1,0 +1,79 @@
+TNoLDE *busca(LDE lista, int valor) {
+  TNoLDE *aux = lista.inicio;
+  if (isEmpty(lista) == 1) {
+    return NULL;
+  } else {
+    if (valor == lista.inicio->info) {
+      return lista.inicio;
+    } else if (valor == lista.fim->info) {
+      return lista.fim;
+    } else {
+      aux = lista.inicio->prox;
+      while (aux != NULL) {
+        if (aux->info == valor) {
+          return aux;
+        } else {
+          aux = aux->prox;
+        }
+      }
+      return NULL;
+    }
+  }
+}
+
+void remover(LDE *lista, int valor) {
+  TNoLDE *aux, *aux2;
+  if (isEmpty(*lista) == 1) {
+    printf("Lista vazia!\n");
+  } else {
+    aux = busca(*lista, valor);
+    if (aux == NULL) {
+      printf("Valor não encontrado!\n");
+    } 
+    //se estiver no inicio
+    else if (aux == lista->inicio) {
+      if (lista->inicio == lista->fim) {
+        printf("Removido: %d\n", valor);
+        lista->inicio = NULL;
+        lista->fim = NULL;
+        lista->qtd--;
+      } 
+      else {
+        lista->inicio = lista->inicio->prox;
+        lista->inicio->ant = NULL;
+        printf("Removido: %d\n", valor);
+        lista->qtd--;
+      }
+      if (lista->qtd == 0) {
+        lista->fim = NULL;
+        lista->inicio = NULL;
+        lista->qtd--;
+      }
+    }
+    //se estiver no fim
+    else if (aux == lista->fim) {
+      lista->fim = lista->fim->ant;
+      lista->fim->prox = NULL;
+      printf("Removido: %d\n", valor);
+      lista->qtd--;
+    } 
+    //se estiver no meio
+    else {
+      aux = lista->inicio->prox;
+        while (aux != NULL){
+          if (aux->info == valor){
+            aux2 = aux->ant;
+            aux2->prox = aux->prox;
+            aux->prox->ant = aux2;
+            printf("Removida: %d\n",aux->info);
+            free(aux);
+            lista->qtd--;
+            break;
+          }
+          aux2 = aux;
+          aux = aux->prox;
+      }
+      
+    }
+  }
+}
